@@ -53,7 +53,7 @@ const Home = () => {
   };
 
   const handleBuyTicketClick = () => {
-    window.open('https://mzima.vercel.app', '_blank');
+    window.open('https://satuk-event-management.vercel.app/', '_blank');
   };
 
   const closeModal = () => {
