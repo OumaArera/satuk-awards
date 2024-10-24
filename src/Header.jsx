@@ -22,8 +22,8 @@ const Header = () => {
         <div className="flex items-center">
           <img src={satukLogo} alt="SATUK Logo" className="h-12 mr-4" />
           <img src={tukLogo} alt="TUK Logo" className="h-12 mr-4" />
-          <h1 className="text-2xl font-bold text-blue-800 whitespace-nowrap">
-            SATUK AWARDS 2024
+          <h1 className="text-2xl font-bold text-blue-800 whitespace-nowrap md:whitespace-normal">
+            SATUK <br className="md:hidden" /> AWARDS 2024
           </h1>
         </div>
 
