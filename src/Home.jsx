@@ -63,7 +63,7 @@ const Home = () => {
   return (
     <div className="relative">
       {/* Fixed Buttons at the Top */}
-      <div className="fixed -top-20 left-0 right-0 z-50 bg-white shadow-lg p-4 flex justify-center space-x-4">
+      <div className="fixed top-20 left-0 right-0 z-50 bg-white shadow-lg p-4 flex justify-center space-x-4">
         <button
           onClick={handleNominationClick}
           className="bg-blue-600 text-white py-2 px-4 rounded shadow-lg hover:bg-blue-700 transition duration-300 transform hover:scale-105"
@@ -85,7 +85,7 @@ const Home = () => {
       </div>
 
       {/* Content Section */}
-      <section className="container mx-auto p-4 grid grid-cols-1 gap-4 mt-24">
+      <section className="container mx-auto p-4 grid grid-cols-1 gap-4 mt-32">
         {/* Event Description Card */}
         <div className="bg-white rounded-lg shadow-lg overflow-hidden relative">
           <div className="w-full h-auto">
