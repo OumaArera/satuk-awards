@@ -63,7 +63,7 @@ const Home = () => {
   return (
     <div className="relative">
       {/* Fixed Buttons at the Top */}
-      <div className="fixed -top-36 left-0 right-0 z-50 bg-white shadow-lg p-4 flex justify-center space-x-4">
+      <div className="fixed -top-8 left-0 right-0 z-50 bg-white shadow-lg p-4 flex justify-center space-x-4">
         <button
           onClick={handleNominationClick}
           className="bg-blue-600 text-white py-2 px-4 rounded shadow-lg hover:bg-blue-700 transition duration-300 transform hover:scale-105"
