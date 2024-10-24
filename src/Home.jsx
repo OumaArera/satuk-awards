@@ -130,13 +130,13 @@ const Home = () => {
             onClick={handleNominationClick}
             className="bg-blue-600 text-white py-2 px-4 rounded shadow-lg hover:bg-blue-700 transition duration-300 transform hover:scale-105"
           >
-            Go to Nomination
+            Nomination
           </button>
           <button
             onClick={handleVoteClick}
             className="bg-green-600 text-white py-2 px-4 rounded shadow-lg hover:bg-green-700 transition duration-300 transform hover:scale-105"
           >
-            Go to Vote
+            Vote
           </button>
           <button
             onClick={handleBuyTicketClick}
