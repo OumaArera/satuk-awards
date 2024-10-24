@@ -62,8 +62,32 @@ const Home = () => {
 
   return (
     <div className="relative">
-      {/* Content Section */}
-      <section className="container mx-auto p-4 grid grid-cols-1 gap-4">
+      {/* Fixed Buttons at the top */}
+      <div className="fixed top-0 left-0 right-0 bg-white shadow-md py-4 z-50">
+        <div className="container mx-auto flex justify-between space-x-4 px-4">
+          <button
+            onClick={handleNominationClick}
+            className="bg-blue-600 text-white py-2 px-4 rounded shadow-lg hover:bg-blue-700 transition duration-300 transform hover:scale-105"
+          >
+            Go to Nomination
+          </button>
+          <button
+            onClick={handleVoteClick}
+            className="bg-green-600 text-white py-2 px-4 rounded shadow-lg hover:bg-green-700 transition duration-300 transform hover:scale-105"
+          >
+            Go to Vote
+          </button>
+          <button
+            onClick={handleBuyTicketClick}
+            className="bg-purple-600 text-white py-2 px-4 rounded shadow-lg hover:bg-purple-700 transition duration-300 transform hover:scale-105"
+          >
+            Buy Ticket
+          </button>
+        </div>
+      </div>
+
+      {/* Add padding to the top of the content to avoid overlap with the buttons */}
+      <section className="container mx-auto p-4 pt-20 grid grid-cols-1 gap-4">
         {/* Event Description Card */}
         <div className="bg-white rounded-lg shadow-lg overflow-hidden relative">
           <div className="w-full h-auto">
@@ -122,28 +146,6 @@ const Home = () => {
           </div>
         </div>
       </section>
-
-      {/* Fixed Buttons */}
-      <div className="fixed bottom-4 left-4 right-4 md:left-auto md:right-10 md:bottom-10 flex justify-between md:justify-end space-x-4 z-50">
-        <button
-          onClick={handleNominationClick}
-          className="bg-blue-600 text-white py-2 px-4 rounded shadow-lg hover:bg-blue-700 transition duration-300 transform hover:scale-105"
-        >
-          Go to Nomination
-        </button>
-        <button
-          onClick={handleVoteClick}
-          className="bg-green-600 text-white py-2 px-4 rounded shadow-lg hover:bg-green-700 transition duration-300 transform hover:scale-105"
-        >
-          Go to Vote
-        </button>
-        <button
-          onClick={handleBuyTicketClick}
-          className="bg-purple-600 text-white py-2 px-4 rounded shadow-lg hover:bg-purple-700 transition duration-300 transform hover:scale-105"
-        >
-          Buy Ticket
-        </button>
-      </div>
 
       {/* Modal Overlay */}
       {showModal && (
