@@ -5,6 +5,7 @@ import Header from './Header';
 import Home from './Home';
 import Nomination from './Nomination';
 import Vote from './Vote';
+import Footer from './Footer';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path="/vote" element={<Vote />} />
           {/* Add other routes as needed */}
         </Routes>
+        <Footer />
       </div>
     </Router>
   );
