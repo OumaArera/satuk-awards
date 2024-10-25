@@ -71,7 +71,7 @@ const Home = () => {
           </div>
           <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black via-transparent to-transparent p-4 text-white">
             <p className="text-xl md:text-3xl font-semibold">
-              The Annual Excellence SATUK Awards Gala is a prestigious event dedicated to recognizing and honouring individuals and groups that have made outstanding contributions to their perspective fields.
+              The Annual Excellence SATUK Awards Gala is a prestigious event dedicated to recognizing and honouring individuals and groups that have made outstanding contributions to their respective fields.
             </p>
           </div>
         </div>
