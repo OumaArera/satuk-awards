@@ -56,9 +56,17 @@ const Nomination = () => {
     }
   }, []);
 
+  const sanitizeInput = (input) => {
+    return input.replace(/^\s+/, '').replace(/\s+/g, ' '); 
+  };
+
+  const handleEmailChange = (e) => {
+    setNominatorEmail(sanitizeInput(e.target.value));
+  };
+
   const handleNomineeChange = (index, value) => {
     const updatedNominees = [...nominees];
-    updatedNominees[index] = value;
+    updatedNominees[index] = sanitizeInput(value);
     setNominees(updatedNominees);
   };
 
@@ -91,8 +99,6 @@ const Nomination = () => {
         }))
         .filter((nominee) => nominee.name),
     };
-  
-    Object.entries(payload).forEach(([key, value]) => console.log(`${key} : ${value}`));
   
     try {
       const response = await fetch(NOMINATION_URL, {
