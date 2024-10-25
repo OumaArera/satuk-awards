@@ -20,7 +20,7 @@ const Home = () => {
   const navigate = useNavigate(); 
 
   useEffect(() => {
-    const nominationStart = '2024-10-25T12:00:00+03:00'; 
+    const nominationStart = '2024-10-24T12:00:00+03:00'; 
     const nominationEnd = '2024-10-30T14:00:00+03:00';
     const voteStart = '2024-11-01T08:00:00+03:00';
     const voteEnd = '2024-11-08T23:59:59+03:00';
