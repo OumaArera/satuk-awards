@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-
+import HCaptcha from '@hcaptcha/react-hcaptcha';
+import CryptoJS from 'crypto-js';
 const votingDetails=[
   {
     categoryId: 1,
@@ -228,51 +229,63 @@ const votingDetails=[
   }
 ]
 
+const secretKey = process.env.REACT_APP_SECRET_KEY;
+
 
 const Vote = () => {
   const [selectedCandidates, setSelectedCandidates] = useState({});
   const [email, setEmail] = useState('');
-  const [showOverlay, setShowOverlay] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const [success, setSuccess] = useState("");
+  const [success, setSuccess] = useState('');
+  const [captchaToken, setCaptchaToken] = useState(null);
+  const [isVotingOpen, setIsVotingOpen] = useState(true); // to track if voting is open
+  const siteKey = process.env.REACT_APP_RECAPTCHA_SITE_KEY;
 
-  // Time constraint
-  const votingStartDate = new Date();
-  const votingEndDate = new Date('2024-11-08T23:59:59');
+  const votingStartDate = new Date("2024-10-31T00:00:00Z");
+  const votingEndDate = new Date("2024-11-08T00:00:00Z");
 
-  // Validate Email (excludes invalid formats)
+  useEffect(() => {
+    const now = new Date();
+    if (now < votingStartDate || now > votingEndDate) {
+      setIsVotingOpen(false);
+    }
+  }, []);
+
   const validateEmail = (email) => {
     const emailPattern = /^[a-zA-Z0-9._%+-]+@(?:gmail\.com|yahoo\.com|outlook\.com|protonmail\.com)$/;
     return emailPattern.test(email);
   };
 
-  useEffect(() => {
-    const now = new Date();
-    if (now < votingStartDate || now > votingEndDate) {
-      setShowOverlay(true);
-    } else {
-      setShowOverlay(false);
-    }
-  }, []);
-
-  // Handle candidate selection
   const handleCandidateSelect = (categoryId, candidateId) => {
     setSelectedCandidates((prev) => ({ ...prev, [categoryId]: candidateId }));
   };
 
-  // Submit vote
+  const handleHCaptchaChange = (token) => {
+    setCaptchaToken(token);
+    setErrorMessage('');
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!secretKey) return;
+    setIsLoading(true);
 
     if (!validateEmail(email)) {
       setErrorMessage('Invalid email format');
+      setIsLoading(false);
       return;
     }
 
-    // Check if all categories have been selected
+    if (!captchaToken) {
+      setErrorMessage('Please complete the CAPTCHA check.');
+      setIsLoading(false);
+      return;
+    }
+
     if (Object.keys(selectedCandidates).length !== votingDetails.length) {
       setErrorMessage('Please vote for each category.');
+      setIsLoading(false);
       return;
     }
 
@@ -280,112 +293,111 @@ const Vote = () => {
       voterEmail: email,
       candidateIds: Object.values(selectedCandidates),
       categoryIds: Object.keys(selectedCandidates).map(Number),
+      captchaToken: captchaToken,
     };
-    Object.entries(data).forEach(([key, value]) => console.log(`${key} : ${value}`));
 
-    setIsLoading(true);
+    const dataStr = JSON.stringify(data);
+    const iv = CryptoJS.lib.WordArray.random(16).toString(CryptoJS.enc.Hex);
+    const encryptedData = CryptoJS.AES.encrypt(dataStr, CryptoJS.enc.Utf8.parse(secretKey), {
+      iv: CryptoJS.enc.Hex.parse(iv),
+      padding: CryptoJS.pad.Pkcs7,
+      mode: CryptoJS.mode.CBC
+    }).toString();
+
+    const payload = {
+      iv: iv,
+      ciphertext: encryptedData
+    };
+
+    Object.entries(payload).forEach(([key, value]) => console.log(`${key} : ${value}`));
+
     try {
       const response = await fetch('https://satuk.onrender.com/users/vote', {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify(data)
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
       });
-      const result = response.json()
-      if(result.success){
+      const result = await response.json();
+
+      if (result.success) {
         setSuccess(result.message);
         setTimeout(() => setSuccess(''), 5000);
+      } else {
+        setErrorMessage(result.message || 'Error submitting vote. Please try again.');
       }
     } catch (error) {
       setErrorMessage('Error submitting vote. Please try again.');
       setTimeout(() => setErrorMessage(''), 5000);
-    } finally{
+    } finally {
       setIsLoading(false);
     }
   };
 
   return (
     <div className="relative">
-      {/* Overlay */}
-      {showOverlay && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-8 rounded-lg shadow-lg max-w-md mx-auto">
-            <h2 className="text-lg font-semibold text-center mb-4">
-              Voting Not Yet Open
-            </h2>
-            <p className="text-center">
-              Voting starts on <strong>today at 12:00 AM</strong> and ends on{' '}
-              <strong>8th November 2024 at midnight</strong>.
-            </p>
-          </div>
-        </div>
-      )}
-
-      {/* Main Content */}
       <div className="flex justify-center items-center min-h-screen bg-gray-100">
-        <form
-          className="bg-white p-6 rounded shadow-lg"
-          onSubmit={handleSubmit}
-        >
-          <h1 className="text-2xl font-bold mb-4">Vote for Your Candidates</h1>
+        {isVotingOpen ? (
+          <form className="bg-white p-6 rounded shadow-lg" onSubmit={handleSubmit}>
+            <h1 className="text-2xl font-bold mb-4">Vote for Your Candidates</h1>
 
-          {/* Email Input */}
-          <div className="mb-4">
-            <label className="block font-semibold mb-2">Email:</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full p-2 border rounded"
-              required
-            />
-          </div>
-
-          {/* Category Candidate Selection */}
-          {votingDetails.map((category) => (
-            <div key={category.categoryId} className="mb-4">
-              <h2 className="font-semibold mb-2">{category.categoryName}</h2>
-              {category.candidates.map((candidate) => (
-                <label
-                  key={candidate.id}
-                  className="flex items-center space-x-2 mb-1"
-                >
-                  <input
-                    type="radio"
-                    name={`category-${category.categoryId}`}
-                    value={candidate.id}
-                    onChange={() =>
-                      handleCandidateSelect(category.categoryId, candidate.id)
-                    }
-                    required
-                  />
-                  <span>{candidate.name}</span>
-                </label>
-              ))}
+            <div className="mb-4">
+              <label className="block font-semibold mb-2">Email:</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full p-2 border rounded"
+                required
+              />
             </div>
-          ))}
 
-          {/* Error Message */}
-          {errorMessage && (
-            <div className="text-red-600 font-semibold">{errorMessage}</div>
-            
-          )}
-          {success && (
-            <div className="text-green-600 font-semibold">{success}</div>
-          )}
+            {votingDetails.map((category) => (
+              <div key={category.categoryId} className="mb-4">
+                <h2 className="font-semibold mb-2">{category.categoryName}</h2>
+                {category.candidates.map((candidate) => (
+                  <label key={candidate.id} className="flex items-center space-x-2 mb-1">
+                    <input
+                      type="radio"
+                      name={`category-${category.categoryId}`}
+                      value={candidate.id}
+                      onChange={() => handleCandidateSelect(category.categoryId, candidate.id)}
+                      required
+                    />
+                    <span>{candidate.name}</span>
+                  </label>
+                ))}
+              </div>
+            ))}
 
-          {/* Submit Button */}
-          <button
-            type="submit"
-            className="w-full py-2 mt-4 bg-blue-500 text-white font-semibold rounded hover:bg-blue-600"
-            disabled={isLoading}
-          >
-            {isLoading ? 'Submitting Vote...' : 'Submit Vote'}
-          </button>
-        </form>
+            <div className="mb-4">
+              <HCaptcha sitekey={siteKey} onVerify={handleHCaptchaChange} />
+            </div>
+
+            {errorMessage && <div className="text-red-600 font-semibold">{errorMessage}</div>}
+            {success && <div className="text-green-600 font-semibold">{success}</div>}
+
+            <button
+              type="submit"
+              className="w-full py-2 mt-4 bg-blue-500 text-white font-semibold rounded hover:bg-blue-600"
+              disabled={isLoading || !captchaToken}
+            >
+              {isLoading ? 'Submitting Vote...' : 'Submit Vote'}
+            </button>
+          </form>
+        ) : (
+          <div className="fixed inset-0 bg-gray-900 bg-opacity-75 flex justify-center items-center">
+            <div className="bg-white p-6 rounded shadow-lg text-center">
+              <h2 className="text-xl font-semibold mb-2">Voting Closed</h2>
+              <p className="text-gray-600">The voting period is from October 31 to November 8, 2024.</p>
+              <p className="text-gray-600 mt-4">Please check back within the allowed dates.</p>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
 export default Vote;
+
 
