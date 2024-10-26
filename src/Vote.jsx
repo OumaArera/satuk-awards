@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import HCaptcha from '@hcaptcha/react-hcaptcha';
-import CryptoJS from 'crypto-js';
 const votingDetails=[
   {
     categoryId: 1,
@@ -229,7 +228,6 @@ const votingDetails=[
   }
 ]
 
-const secretKey = process.env.REACT_APP_SECRET_KEY;
 
 
 const Vote = () => {
@@ -268,7 +266,6 @@ const Vote = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!secretKey) return;
     setIsLoading(true);
 
     if (!validateEmail(email)) {
@@ -296,26 +293,12 @@ const Vote = () => {
       captchaToken: captchaToken,
     };
 
-    const dataStr = JSON.stringify(data);
-    const iv = CryptoJS.lib.WordArray.random(16).toString(CryptoJS.enc.Hex);
-    const encryptedData = CryptoJS.AES.encrypt(dataStr, CryptoJS.enc.Utf8.parse(secretKey), {
-      iv: CryptoJS.enc.Hex.parse(iv),
-      padding: CryptoJS.pad.Pkcs7,
-      mode: CryptoJS.mode.CBC
-    }).toString();
-
-    const payload = {
-      iv: iv,
-      ciphertext: encryptedData
-    };
-
-    Object.entries(payload).forEach(([key, value]) => console.log(`${key} : ${value}`));
 
     try {
       const response = await fetch('https://satuk.onrender.com/users/vote', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(data),
       });
       const result = await response.json();
 

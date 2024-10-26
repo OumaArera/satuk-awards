@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-const NOMINATION_URL = 'https://satuk.onrender.com/users/nominate';
+import HCaptcha from '@hcaptcha/react-hcaptcha';
 
+const NOMINATION_URL = 'https://satuk.onrender.com/users/nominate';
 // Helper function to check the current date against the nomination period
 const isWithinNominationPeriod = (startDate, endDate) => {
   const now = new Date();
@@ -35,19 +36,23 @@ const categories = [
     "Outdoor Games Sports Person of the Year Award"
 ];
 
+const CAPTCHA_SITE_KEY = process.env.REACT_APP_RECAPTCHA_SITE_KEY;
+
+// Rest of your imports...
+
 const Nomination = () => {
   const [nominatorEmail, setNominatorEmail] = useState('');
   const [nominees, setNominees] = useState(categories.map(() => ''));
-  const [reviewMode, setReviewMode] = useState(false); // Review Mode
-  const [modalMessage, setModalMessage] = useState(''); // Modal message
-  const [showModal, setShowModal] = useState(false); // Modal visibility
+  const [reviewMode, setReviewMode] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
+  const [showModal, setShowModal] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false); // Loading state
+  const [loading, setLoading] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState(null);
 
-  // Effect to check nomination time validity
   useEffect(() => {
-    const nominationStart = '2024-10-24T12:00:00+03:00'; // EAT timezone
+    const nominationStart = '2024-10-24T12:00:00+03:00';
     const nominationEnd = '2024-10-30T14:00:00+03:00';
     
     if (!isWithinNominationPeriod(nominationStart, nominationEnd)) {
@@ -56,39 +61,22 @@ const Nomination = () => {
     }
   }, []);
 
-  const sanitizeInput = (input) => {
-    return input.replace(/^\s+/, '').replace(/\s+/g, ' '); 
+  const handleHCaptchaChange = (token) => {
+    setCaptchaToken(token);
   };
 
-  const handleEmailChange = (e) => {
-    setNominatorEmail(sanitizeInput(e.target.value));
+  const closeModal = () => {
+    setShowModal(false);
   };
-
-  const handleNomineeChange = (index, value) => {
-    const updatedNominees = [...nominees];
-    updatedNominees[index] = sanitizeInput(value);
-    setNominees(updatedNominees);
-  };
-
-  const handleReview = () => {
-    const allFieldsFilled = nominees.every((nominee) => nominee.trim() !== '');
-
-    if (!nominatorEmail.trim()) {
-      setError('Please enter your email.');
-    } else if (!allFieldsFilled) {
-      setError('Please fill in all nomination fields before proceeding.');
-    } else {
-      setError('');
-      setReviewMode(true);
-    }
-  };
-
-  const handleEdit = () => {
-    setReviewMode(false);
-  };
+  
 
   const handleSubmit = async () => {
-    setLoading(true);  // Set loading to true
+    if (!captchaToken) {
+      setError('Please complete the CAPTCHA.');
+      return;
+    }
+
+    setLoading(true);
   
     const payload = {
       nominator: nominatorEmail,
@@ -106,39 +94,30 @@ const Nomination = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({ ...payload, captchaToken }),
       });
       const result = await response.json();
   
       if (result.success) {
         setMessage(result.message);
         setError('');
-  
-        // Clear inputs after successful submission
         setNominatorEmail('');
         setNominees(categories.map(() => ''));
-  
-        // Exit review mode and go back to form
         setReviewMode(false);
+        setCaptchaToken(null); // Reset captcha token
       } else {
         setError(result.message);
       }
     } catch (error) {
       setError('Submission failed. Please try again.');
     } finally {
-      setLoading(false); // Set loading to false
+      setLoading(false);
     }
   
     setTimeout(() => {
       setMessage('');
       setError('');
-    }, 5000); // Clear messages after 5 seconds
-  };
-  
-
-  // Close the modal
-  const closeModal = () => {
-    setShowModal(false);
+    }, 5000);
   };
 
   return (
@@ -148,6 +127,14 @@ const Nomination = () => {
         <p className="text-center text-lg font-semibold text-gray-700 mb-6">
           Please nominate a person in each category. Ensure that you complete all fields before submission.
         </p>
+  
+        {/* Success or error message */}
+        {message && (
+          <p className="text-center text-green-600 font-medium mb-4">{message}</p>
+        )}
+        {error && (
+          <p className="text-center text-red-600 font-medium mb-4">{error}</p>
+        )}
   
         {/* Modal to display messages */}
         {showModal && (
@@ -169,83 +156,64 @@ const Nomination = () => {
             </div>
           </div>
         )}
-        {/* Form or Review Mode */}
-        {!reviewMode ? (
-          <div>
-            <h1 className="text-2xl font-semibold text-center mb-6">Nomination Form</h1>
-            
-            {/* Email Input */}
-            <label htmlFor="email" className="block mb-2 font-semibold text-gray-700">Your Email</label>
-            <input
-              type="email"
-              id="email"
-              value={nominatorEmail}
-              onChange={(e) => setNominatorEmail(e.target.value)}
-              className="border border-gray-300 p-2 rounded mb-6 w-full placeholder-gray-400"
-              placeholder="Enter your valid email"
-              required
-            />
   
-            {/* Nomination Categories */}
-            {categories.map((category, index) => (
-              <div key={index} className="mb-6">
-                <label className="block mb-2 font-semibold text-gray-700">{category}</label>
-                <input
-                  type="text"
-                  value={nominees[index]}
-                  onChange={(e) => handleNomineeChange(index, e.target.value)}
-                  className="border border-gray-300 p-2 rounded w-full placeholder-gray-400"
-                  placeholder={`Nominate a person for ${category}`}
-                />
-              </div>
-            ))}
-
-            
-            {/* Review Button */}
-            <div className="text-center mt-6">
-              <button
-                onClick={handleReview}
-                className="bg-green-600 text-white py-2 px-4 rounded shadow-lg hover:bg-green-700 transition duration-300"
-              >
-                Review
-              </button>
-            </div>
+        {/* Email input for nominator */}
+        <div className="mb-4">
+          <label className="block text-gray-700 font-semibold mb-2" htmlFor="nominatorEmail">
+            Your Email
+          </label>
+          <input
+            type="email"
+            id="nominatorEmail"
+            value={nominatorEmail}
+            onChange={(e) => setNominatorEmail(e.target.value)}
+            placeholder="Enter your email"
+            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          />
+        </div>
+  
+        {/* Nominee input fields for each category */}
+        {categories.map((category, index) => (
+          <div key={index} className="mb-4">
+            <label className="block text-gray-700 font-semibold mb-2">
+              {category}
+            </label>
+            <input
+              type="text"
+              value={nominees[index]}
+              onChange={(e) => {
+                const updatedNominees = [...nominees];
+                updatedNominees[index] = e.target.value;
+                setNominees(updatedNominees);
+              }}
+              placeholder={`Nominee for ${category}`}
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
           </div>
-        ) : (
-          <div>
-            <h1 className="text-2xl font-semibold text-center mb-6">Review Your Nominations</h1>
-            <ul className="list-disc ml-6">
-              {nominees.map((name, index) => (
-                name && (
-                  <li key={index} className="mb-2">
-                    {categories[index]}: <strong>{name}</strong>
-                  </li>
-                )
-              ))}
-            </ul>
-            <div className="flex justify-between mt-6">
-              <button
-                onClick={handleEdit}
-                className="bg-gray-600 text-white py-2 px-4 rounded shadow-lg hover:bg-gray-700 transition duration-300"
-              >
-                Edit
-              </button>
-                {/* Display success and error messages */}
-                {message && <p className="text-green-500 text-center mb-4">{message}</p>}
-                {error && <p className="text-red-500 text-center mb-4">{error}</p>}
-              <button
-                onClick={handleSubmit}
-                className={`bg-green-600 text-white py-2 px-4 rounded shadow-lg hover:bg-green-700 transition duration-300 ${loading ? 'opacity-50' : ''}`}
-                disabled={loading}
-              >
-                {loading ? 'Submitting...' : 'Submit'}
-              </button>
-            </div>
-          </div>
-        )}
+        ))}
+  
+        {/* HCaptcha for spam prevention */}
+        <div className="text-center mb-6">
+          <HCaptcha
+            sitekey={CAPTCHA_SITE_KEY}
+            onVerify={handleHCaptchaChange}
+          />
+        </div>
+  
+        {/* Submit button */}
+        <button
+          onClick={handleSubmit}
+          disabled={loading || !captchaToken}
+          className={`w-full bg-green-600 text-white py-2 px-4 rounded shadow-lg hover:bg-green-700 transition duration-300 ${loading ? 'opacity-50' : ''}`}
+        >
+          {loading ? 'Submitting...' : 'Submit'}
+        </button>
       </div>
     </div>
   );
+  
 };
 
 export default Nomination;
+
