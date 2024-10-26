@@ -62,6 +62,12 @@ const Home = () => {
 
   return (
     <div className="relative">
+      {/* Important Message for Non-TUK Students */}
+      <div className="bg-red-700 text-white text-center py-3 px-4 font-bold text-lg shadow-md mb-4">
+        ** Attention: Only non-TUK students need to purchase tickets to join the SATUK AWARDS 2024. 
+        TUK students are <span className="underline">not required</span> to buy tickets. Click "Buy Ticket" if you are a non-TUK student. **
+      </div>
+
       {/* Content Section */}
       <section className="container mx-auto p-4 grid grid-cols-1 gap-4">
         {/* Event Description Card */}
