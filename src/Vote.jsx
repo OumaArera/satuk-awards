@@ -240,8 +240,8 @@ const Vote = () => {
   const [isVotingOpen, setIsVotingOpen] = useState(true); // to track if voting is open
   const siteKey = process.env.REACT_APP_RECAPTCHA_SITE_KEY;
 
-  const votingStartDate = new Date("2024-10-31T00:00:00Z");
-  const votingEndDate = new Date("2024-11-08T00:00:00Z");
+  const votingStartDate = new Date("2024-10-31T21:00:00Z");
+  const votingEndDate = new Date("2024-11-08T21:00:00Z");
 
   useEffect(() => {
     const now = new Date();
