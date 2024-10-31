@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import HCaptcha from '@hcaptcha/react-hcaptcha';
+import CryptoJS from 'crypto-js';
+
+const secretKey = process.env.REACT_APP_SECRET_KEY;
 const votingDetails=[
   {
     categoryId: 1,
@@ -250,8 +253,8 @@ const Vote = () => {
     // Automatically set the first candidates for categories 1 and 2
     setSelectedCandidates((prev) => ({
       ...prev,
-      1: votingDetails[0].candidates[0].id, // First candidate in the first category
-      2: votingDetails[1].candidates[0].id, // First candidate in the second category
+      1: votingDetails[0].candidates[0].id,
+      2: votingDetails[1].candidates[0].id, 
     }));
   }, []);
 
@@ -271,6 +274,7 @@ const Vote = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if(!secretKey) return;
     setIsLoading(true);
 
     if (!validateEmail(email)) {
@@ -299,10 +303,22 @@ const Vote = () => {
     };
 
     try {
+
+      const dataStr = JSON.stringify(data);
+      const iv = CryptoJS.lib.WordArray.random(16).toString(CryptoJS.enc.Hex);
+      const encryptedData = CryptoJS.AES.encrypt(dataStr, CryptoJS.enc.Utf8.parse(secretKey), {
+        iv: CryptoJS.enc.Hex.parse(iv),
+        padding: CryptoJS.pad.Pkcs7,
+        mode: CryptoJS.mode.CBC,
+      }).toString();
+
+      const payload = { iv, ciphertext: encryptedData };
+
+
       const response = await fetch('https://satuk.onrender.com/users/vote', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
+        body: JSON.stringify(payload),
       });
       const result = await response.json();
 
