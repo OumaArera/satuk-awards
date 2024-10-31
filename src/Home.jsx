@@ -22,7 +22,7 @@ const Home = () => {
   useEffect(() => {
     const nominationStart = '2024-10-24T12:00:00+03:00'; 
     const nominationEnd = '2024-10-30T14:00:00+03:00';
-    const voteStart = new Date("2024-10-31T09:00:00Z");
+    const voteStart = new Date("2024-10-30T10:00:00Z");
     const voteEnd = new Date("2024-11-08T14:00:00Z");
 
     if (isWithinDateRange(nominationStart, nominationEnd)) {
