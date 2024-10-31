@@ -13,35 +13,19 @@ const isWithinDateRange = (startDate, endDate) => {
 };
 
 const Home = () => {
-  const [canNominate, setCanNominate] = useState(false);
   const [canVote, setCanVote] = useState(false);
   const [modalContent, setModalContent] = useState('');
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate(); 
 
   useEffect(() => {
-    const nominationStart = new Date(); 
-    const nominationEnd = '2024-10-30T14:00:00+03:00';
-    const voteStart = new Date("2024-10-30T14:00:00Z");
+    const voteStart = new Date("2024-10-31T14:00:00Z");
     const voteEnd = new Date("2024-11-08T14:00:00Z");
-
-    if (isWithinDateRange(nominationStart, nominationEnd)) {
-      setCanNominate(true);
-    }
 
     if (isWithinDateRange(voteStart, voteEnd)) {
       setCanVote(true);
     }
   }, []);
-
-  const handleNominationClick = () => {
-    if (canNominate) {
-      navigate('/nomination');
-    } else {
-      setModalContent('Nomination is currently closed.');
-      setShowModal(true);
-    }
-  };
 
   const handleVoteClick = () => {
     if (canVote) {
@@ -67,6 +51,15 @@ const Home = () => {
         ** Attention: Only non-TUK students need to purchase tickets to join the SATUK AWARDS 2024. 
         TUK students are <span className="underline">not required</span> to buy tickets. Click "Buy Ticket" if you are a non-TUK student. **
       </div>
+
+      {/* Timeline Section */}
+      <section className="bg-blue-700 text-white p-4 rounded-lg mb-4 shadow-lg text-center">
+        <h2 className="text-2xl font-bold">Event Timeline</h2>
+        <p className="text-lg mt-2">Voting: 31st October 2024, 2PM EAT - 8th November 2024, 2PM</p>
+        <p className="text-lg">Vetting Process: 8th November - 11th November 2024</p>
+        <p className="text-lg">Awards Event: 15th November 2024</p>
+        <p className="text-sm mt-2">Join us in celebrating outstanding achievements and contributions!</p>
+      </section>
 
       {/* Content Section */}
       <section className="container mx-auto p-4 grid grid-cols-1 gap-4">
@@ -132,12 +125,6 @@ const Home = () => {
       {/* Fixed Buttons Above Footer */}
       <div className="bg-white bg-opacity-80 fixed bottom-16 left-0 right-0 mx-auto p-4 shadow-md z-50">
         <div className="flex justify-around">
-          <button
-            onClick={handleNominationClick}
-            className="bg-blue-600 text-white py-2 px-4 rounded shadow-lg hover:bg-blue-700 transition duration-300 transform hover:scale-105"
-          >
-            Nomination
-          </button>
           <button
             onClick={handleVoteClick}
             className="bg-green-600 text-white py-2 px-4 rounded shadow-lg hover:bg-green-700 transition duration-300 transform hover:scale-105"
