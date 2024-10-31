@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import HCaptcha from '@hcaptcha/react-hcaptcha';
+import CryptoJS from 'crypto-js';
+
 const votingDetails=[
   {
     categoryId: 1,
@@ -228,7 +230,7 @@ const votingDetails=[
   }
 ]
 
-
+const SECRET_KEY = process.env.REACT_APP_SECRET_KEY;
 
 const Vote = () => {
   const [selectedCandidates, setSelectedCandidates] = useState({});
@@ -240,7 +242,7 @@ const Vote = () => {
   const [isVotingOpen, setIsVotingOpen] = useState(true);
   const siteKey = process.env.REACT_APP_RECAPTCHA_SITE_KEY;
 
-  const votingStartDate = new Date("2024-11-01T20:00:00Z");
+  const votingStartDate = new Date("2024-10-30T20:00:00Z");
   const votingEndDate = new Date("2024-11-08T21:00:00Z");
 
   useEffect(() => {
@@ -252,8 +254,8 @@ const Vote = () => {
     // Automatically set the first candidates for categories 1 and 2
     setSelectedCandidates((prev) => ({
       ...prev,
-      1: votingDetails[0].candidates[0].id, // First candidate in the first category
-      2: votingDetails[1].candidates[0].id, // First candidate in the second category
+      1: votingDetails[0].candidates[0].id,
+      2: votingDetails[1].candidates[0].id,
     }));
   }, []);
 
@@ -293,6 +295,7 @@ const Vote = () => {
       return;
     }
 
+    // Encrypt data
     const data = {
       voterEmail: email,
       candidateIds: Object.values(selectedCandidates),
@@ -300,11 +303,13 @@ const Vote = () => {
       captchaToken: captchaToken,
     };
 
+    const encryptedData = CryptoJS.AES.encrypt(JSON.stringify(data), SECRET_KEY).toString();
+
     try {
       const response = await fetch('https://satuk.onrender.com/users/vote', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ encryptedData }), // Send encrypted data
       });
       const result = await response.json();
 
@@ -390,6 +395,7 @@ const Vote = () => {
 };
 
 export default Vote;
+
 
 
 
