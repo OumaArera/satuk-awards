@@ -61,7 +61,7 @@ const votingDetails=[
     candidates: [
       {name: "Mercyline Namasaka", id: 19},
       {name: "Austine Wambingwa", id: 20},
-      {name: "Lucky Jones", id: 21}
+      {name: "Mbuzi Wa Migori	", id: 21}
     ]
   },
   {
