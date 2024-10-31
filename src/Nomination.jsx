@@ -47,7 +47,7 @@ const Nomination = () => {
         {/* Invitation to Awards */}
         <div className="text-center">
           <p className="text-xl font-semibold text-green-600 mb-4">
-            📢 Mark your calendars for the Awards Ceremony!
+            📢 Mark your calendars for the SATUK AWARDS 2024!
           </p>
           <p className="text-gray-700">
             We invite everyone to attend and cheer for the winners on <strong>15th November 2024</strong>.
