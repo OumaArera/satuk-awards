@@ -379,7 +379,7 @@ const Vote = () => {
           <div className="fixed inset-0 bg-gray-900 bg-opacity-75 flex justify-center items-center">
             <div className="bg-white p-6 rounded shadow-lg text-center">
               <h2 className="text-xl font-semibold mb-2">Voting Closed</h2>
-              <p className="text-gray-600">The voting period is from October 31 at 2PM to November 8, 2024 2PM.</p>
+              <p className="text-gray-600">The voting period is from November 1st at 8PM to November 8, 2024 2PM.</p>
               <p className="text-gray-600 mt-4">Please check back within the allowed dates.</p>
             </div>
           </div>
