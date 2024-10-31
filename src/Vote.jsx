@@ -314,6 +314,7 @@ const Vote = () => {
         setTimeout(() => setSuccess(''), 5000);
       } else {
         setErrorMessage(result.message || 'Error submitting vote. Please try again.');
+        setTimeout(() => setErrorMessage(''), 5000);
       }
     } catch (error) {
       setErrorMessage('Error submitting vote. Please try again.');
