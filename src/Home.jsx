@@ -52,15 +52,6 @@ const Home = () => {
         TUK students are <span className="underline">not required</span> to buy tickets. Click "Buy Ticket" if you are a non-TUK student. **
       </div>
 
-      {/* Timeline Section */}
-      <section className="bg-blue-700 text-white p-4 rounded-lg mb-4 shadow-lg text-center">
-        <h2 className="text-2xl font-bold">Event Timeline</h2>
-        <p className="text-lg mt-2">Voting: 31st October 2024, 2PM EAT - 8th November 2024, 2PM</p>
-        <p className="text-lg">Vetting Process: 8th November - 11th November 2024</p>
-        <p className="text-lg">Awards Event: 15th November 2024</p>
-        <p className="text-sm mt-2">Join us in celebrating outstanding achievements and contributions!</p>
-      </section>
-
       {/* Content Section */}
       <section className="container mx-auto p-4 grid grid-cols-1 gap-4">
         {/* Event Description Card */}
