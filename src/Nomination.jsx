@@ -22,16 +22,19 @@ const Nomination = () => {
         </p>
         
         <p className="text-center text-lg font-semibold text-gray-700 mb-6">
-          Celebrating Excellence, Fostering Inspiration, and Building a Legacy
+          Celebrating the Exceptional Change-Makers Who Shape Our Society
         </p>
 
-        {/* About SATUK AWARDS */}
+        {/* Message from the President */}
         <div className="bg-gray-200 p-4 rounded-lg mb-8">
           <p className="text-gray-700 text-lg text-center">
-            SATUK AWARDS 2024 is dedicated to recognizing outstanding students and groups within The Technical University of Kenya (TUK). This prestigious event brings together the brightest and most talented individuals who embody the spirit of leadership, innovation, and service to the university and beyond.
+            “The SATUK AWARDS 2024 is more than an event; it's a tribute to the visionaries, the outliers, and the passionate change-makers within The Technical University of Kenya (TUK). These awards recognize those who do not simply meet expectations—they redefine them. They are the ones who dare to go beyond, creating solutions, inspiring communities, and lighting paths toward a better future for us all.
           </p>
           <p className="text-gray-700 text-lg text-center mt-4">
-            Every nominee and winner represents a story of commitment, passion, and excellence. Whether it's academic achievements, creative innovations, community involvement, or leadership roles, the SATUK AWARDS 2024 honors those who inspire their peers and set the highest standards of achievement within TUK.
+            Whether through groundbreaking projects, unwavering commitment to service, or an unrelenting spirit to improve the world, our nominees and winners remind us of the power of purpose-driven action. Each is a testament to what we can achieve when we dedicate ourselves to serving others and pushing the boundaries of possibility. It is my honor to welcome you all to celebrate the remarkable efforts and inspiring accomplishments of TUK’s finest.
+          </p>
+          <p className="text-gray-700 text-lg text-center mt-4 font-semibold">
+            – Nabangi Wanyonyi, 7th President of TUK
           </p>
         </div>
 
@@ -41,7 +44,7 @@ const Nomination = () => {
             📢 Join us at the SATUK AWARDS 2024!
           </p>
           <p className="text-gray-700">
-            We invite you to celebrate the remarkable contributions of our students and groups. Mark your calendar, bring your enthusiasm, and get ready to applaud those who make TUK a beacon of excellence!
+            We invite you to be part of this unforgettable celebration. Bring your passion, your applause, and your pride as we honor those who strive to make TUK and the world a brighter place for everyone.
           </p>
         </div>
 
@@ -56,7 +59,7 @@ const Nomination = () => {
                 &times;
               </button>
               <p className="text-gray-700 text-center font-semibold mb-4">Welcome to SATUK AWARDS 2024</p>
-              <p className="text-gray-700 text-center mb-4">Honoring the brightest and best of TUK</p>
+              <p className="text-gray-700 text-center mb-4">Celebrating the Exceptional Change-Makers of TUK</p>
               <button
                 onClick={closeModal}
                 className="mt-4 bg-blue-600 text-white py-2 px-4 rounded shadow-lg hover:bg-blue-700 transition duration-300 w-full"
