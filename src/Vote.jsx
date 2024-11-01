@@ -350,7 +350,7 @@ const Vote = () => {
               <input
                 type="email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => setEmail(e.target.value.toLowerCase())}
                 className="w-full p-2 border rounded"
                 required
               />
