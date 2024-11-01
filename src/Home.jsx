@@ -19,7 +19,7 @@ const Home = () => {
   const navigate = useNavigate(); 
 
   useEffect(() => {
-    const voteStart = new Date("2024-111-01T20:00:00Z");
+    const voteStart = new Date("2024-11-01T16:00:00Z");
     const voteEnd = new Date("2024-11-08T14:00:00Z");
 
     if (isWithinDateRange(voteStart, voteEnd)) {
@@ -52,9 +52,12 @@ const Home = () => {
         TUK students are <span className="underline">not required</span> to buy tickets. Click "Buy Ticket" if you are a non-TUK student. **
       </div>
 
+<<<<<<< HEAD
       {/* Timeline Section */}
       
 
+=======
+>>>>>>> 1ee958a43fa3182ed85f6db174fd423ed0fcd510
       {/* Content Section */}
       <section className="container mx-auto p-4 grid grid-cols-1 gap-4">
         {/* Event Description Card */}
