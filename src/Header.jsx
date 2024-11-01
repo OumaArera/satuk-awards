@@ -40,14 +40,6 @@ const Header = () => {
             </li>
             <li>
               <Link 
-                to="/nomination"
-                className={`block text-lg font-bold ${location.pathname === '/nomination' ? 'text-blue-600' : 'text-gray-800 hover:text-blue-600'} transition-colors duration-300`}
-              >
-                Nomination
-              </Link>
-            </li>
-            <li>
-              <Link 
                 to="/vote"
                 className={`block text-lg font-bold ${location.pathname === '/vote' ? 'text-blue-600' : 'text-gray-800 hover:text-blue-600'} transition-colors duration-300`}
               >
