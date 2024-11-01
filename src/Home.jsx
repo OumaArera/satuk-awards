@@ -19,7 +19,7 @@ const Home = () => {
   const navigate = useNavigate(); 
 
   useEffect(() => {
-    const voteStart = new Date("2024-111-01T16:00:00Z");
+    const voteStart = new Date("2024-11-01T16:00:00Z");
     const voteEnd = new Date("2024-11-08T14:00:00Z");
 
     if (isWithinDateRange(voteStart, voteEnd)) {
