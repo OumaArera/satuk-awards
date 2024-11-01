@@ -51,7 +51,6 @@ const Home = () => {
         ** Attention: Only non-TUK students need to purchase tickets to join the SATUK AWARDS 2024. 
         TUK students are <span className="underline">not required</span> to buy tickets. Click "Buy Ticket" if you are a non-TUK student. **
       </div>
-
       {/* Content Section */}
       <section className="container mx-auto p-4 grid grid-cols-1 gap-4">
         {/* Event Description Card */}
