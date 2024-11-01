@@ -52,12 +52,6 @@ const Home = () => {
         TUK students are <span className="underline">not required</span> to buy tickets. Click "Buy Ticket" if you are a non-TUK student. **
       </div>
 
-<<<<<<< HEAD
-      {/* Timeline Section */}
-      
-
-=======
->>>>>>> 1ee958a43fa3182ed85f6db174fd423ed0fcd510
       {/* Content Section */}
       <section className="container mx-auto p-4 grid grid-cols-1 gap-4">
         {/* Event Description Card */}
