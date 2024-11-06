@@ -294,6 +294,7 @@ const Vote = () => {
     const elapsedSeconds = (Date.now() - startTime) / 1000;
     if (elapsedSeconds < 10) {
       setErrorMessage('There was an error processing your vote.');
+      setTimeout(() => setErrorMessage(""), 5000);
       return;
     }
 
