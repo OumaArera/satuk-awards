@@ -91,7 +91,7 @@ const votingDetails=[
     candidates: [
       {name: "Drama", id: 28},
       {name: "French Club", id: 29},
-      {name: "Biochemestry and Biotechnology Students Association", id: 30}
+      {name: "Biochemistry and Biotechnology Students Association", id: 30}
     ]
   },
   {
@@ -261,10 +261,26 @@ const Vote = () => {
   }, []);
 
   const validateEmail = (email) => {
-    const emailPattern = /^[a-zA-Z0-9._%+-]+@(?:gmail\.com|yahoo\.com|outlook\.com|protonmail\.com)$/;
-    const suspiciousPattern = /^[a-zA-Z0-9]{6,}@(?:gmail\.com|yahoo\.com|outlook\.com|protonmail\.com)$/;
-    return emailPattern.test(email) && !suspiciousPattern.test(email); // Avoid random, short emails
+    // Standard pattern to match typical email structures for allowed domains
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@(gmail\.com|yahoo\.com|outlook\.com|protonmail\.com)$/;
+    
+    // Identify repetitive characters or very short patterns as suspicious
+    const suspiciousPattern = /^([a-zA-Z0-9])\1{5,}@(?:gmail\.com|yahoo\.com|outlook\.com|protonmail\.com)$/;
+  
+    // Validate the general structure first, then check for suspicion
+    if (!emailPattern.test(email)) {
+      return false; // Invalid if it doesn’t match the structure
+    }
+    
+    // Suspicious if it’s too short, repetitive, or unusually simplistic
+    if (suspiciousPattern.test(email)) {
+      return false; // Flagged as suspicious based on the simplistic structure
+    }
+  
+    // If both checks pass, the email is valid
+    return true;
   };
+  
 
   const handleCandidateSelect = (categoryId, candidateId) => {
     setSelectedCandidates((prev) => ({ ...prev, [categoryId]: candidateId }));
