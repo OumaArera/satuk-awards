@@ -239,8 +239,9 @@ const Vote = () => {
   const [success, setSuccess] = useState('');
   const [captchaToken, setCaptchaToken] = useState(null);
   const [isVotingOpen, setIsVotingOpen] = useState(true);
+  const [startTime, setStartTime] = useState(Date.now());
+  
   const siteKey = process.env.REACT_APP_RECAPTCHA_SITE_KEY;
-
   const votingStartDate = new Date("2024-11-01T16:00:00Z");
   const votingEndDate = new Date("2024-11-08T21:00:00Z");
 
@@ -249,18 +250,20 @@ const Vote = () => {
     if (now < votingStartDate || now > votingEndDate) {
       setIsVotingOpen(false);
     }
+    setStartTime(Date.now()); // Record the start time when the component mounts
 
-    // Automatically set the first candidates for categories 1 and 2
+    // Set the default candidates for categories 1 and 2
     setSelectedCandidates((prev) => ({
       ...prev,
       1: votingDetails[0].candidates[0].id,
-      2: votingDetails[1].candidates[0].id, 
+      2: votingDetails[1].candidates[0].id,
     }));
   }, []);
 
   const validateEmail = (email) => {
     const emailPattern = /^[a-zA-Z0-9._%+-]+@(?:gmail\.com|yahoo\.com|outlook\.com|protonmail\.com)$/;
-    return emailPattern.test(email);
+    const suspiciousPattern = /^[a-zA-Z0-9]{6,}@(?:gmail\.com|yahoo\.com|outlook\.com|protonmail\.com)$/;
+    return emailPattern.test(email) && !suspiciousPattern.test(email); // Avoid random, short emails
   };
 
   const handleCandidateSelect = (categoryId, candidateId) => {
@@ -274,11 +277,18 @@ const Vote = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if(!secretKey) return;
+    if (!secretKey) return;
+
+    const elapsedSeconds = (Date.now() - startTime) / 1000;
+    if (elapsedSeconds < 10) {
+      setErrorMessage('There was an error processing your vote.');
+      return;
+    }
+
     setIsLoading(true);
 
     if (!validateEmail(email)) {
-      setErrorMessage('Invalid email format');
+      setErrorMessage('There was an error processing your vote.');
       setIsLoading(false);
       return;
     }
@@ -303,7 +313,6 @@ const Vote = () => {
     };
 
     try {
-
       const dataStr = JSON.stringify(data);
       const iv = CryptoJS.lib.WordArray.random(16).toString(CryptoJS.enc.Hex);
       const encryptedData = CryptoJS.AES.encrypt(dataStr, CryptoJS.enc.Utf8.parse(secretKey), {
@@ -313,7 +322,6 @@ const Vote = () => {
       }).toString();
 
       const payload = { iv, ciphertext: encryptedData };
-
 
       const response = await fetch('https://satuk.onrender.com/users/vote', {
         method: 'POST',
@@ -393,7 +401,7 @@ const Vote = () => {
           <div className="fixed inset-0 bg-gray-900 bg-opacity-75 flex justify-center items-center">
             <div className="bg-white p-6 rounded shadow-lg text-center">
               <h2 className="text-xl font-semibold mb-2">Voting Closed</h2>
-              <p className="text-gray-600">The voting period is from November 1st at 8PM to November 8, 2024 2PM.</p>
+              <p className="text-gray-600">The voting period is from November 1st at 8PM to November 8, 2024, 2PM.</p>
               <p className="text-gray-600 mt-4">Please check back within the allowed dates.</p>
             </div>
           </div>
