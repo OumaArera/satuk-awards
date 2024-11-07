@@ -261,20 +261,26 @@ const Vote = () => {
   }, []);
 
   const validateEmail = (email) => {
-    // Matches typical emails with acceptable characters and lengths
-    const emailPattern = /^[a-zA-Z][a-zA-Z0-9._%+-]{2,20}@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    // Standard pattern to match typical email structures for allowed domains
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@(gmail\.com|yahoo\.com|outlook\.com|protonmail\.com)$/;
+    
+    // Identify repetitive characters or very short patterns as suspicious
+    const suspiciousPattern = /^([a-zA-Z0-9])\1{5,}@(?:gmail\.com|yahoo\.com|outlook\.com|protonmail\.com)$/;
   
-    // Detects suspicious repetitive patterns and disallows low entropy (random letters)
-    const repetitivePattern = /^([a-zA-Z])\1{5,}@(?:gmail|yahoo|outlook|protonmail)\.com$/;
-    const lowEntropyPattern = /^[a-z]{6,}@(?:gmail|yahoo|outlook|protonmail)\.com$/;
+    // Validate the general structure first, then check for suspicion
+    if (!emailPattern.test(email)) {
+      return false; // Invalid if it doesn’t match the structure
+    }
+    
+    // Suspicious if it’s too short, repetitive, or unusually simplistic
+    if (suspiciousPattern.test(email)) {
+      return false; // Flagged as suspicious based on the simplistic structure
+    }
   
-    // Validate the general structure, check for common domain typos, and avoid low-entropy patterns
-    return (
-      emailPattern.test(email) &&
-      !repetitivePattern.test(email) &&
-      !lowEntropyPattern.test(email)
-    );
+    // If both checks pass, the email is valid
+    return true;
   };
+  
   
   
 
