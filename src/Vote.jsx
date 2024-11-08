@@ -243,7 +243,7 @@ const Vote = () => {
   
   const siteKey = process.env.REACT_APP_RECAPTCHA_SITE_KEY;
   const votingStartDate = new Date("2024-11-01T16:00:00Z");
-  const votingEndDate = new Date("2024-11-08T21:00:00Z");
+  const votingEndDate = new Date("2024-11-08T23:59:59Z");
 
   useEffect(() => {
     const now = new Date();

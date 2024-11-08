@@ -20,7 +20,7 @@ const Home = () => {
 
   useEffect(() => {
     const voteStart = new Date("2024-11-01T16:00:00Z");
-    const voteEnd = new Date("2024-11-08T14:00:00Z");
+    const voteEnd = new Date("2024-11-08T23:59:59Z");
 
     if (isWithinDateRange(voteStart, voteEnd)) {
       setCanVote(true);
